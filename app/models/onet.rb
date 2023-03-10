@@ -1,0 +1,2 @@
+class Onet < ApplicationRecord
+end

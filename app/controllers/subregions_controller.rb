@@ -1,0 +1,2 @@
+class SubregionsController < ApplicationController
+end
