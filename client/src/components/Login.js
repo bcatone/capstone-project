@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router"
+import React, { useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { updateMe } from "../redux/me/meSlice";
 import { updateErrors } from '../redux/error/errorSlice';
-import { updateLoading } from "../redux/loading/loadingSlice";
+import { updateMe } from "../redux/me/meSlice";
+import { useNavigate } from "react-router"
+import { Link } from "react-router-dom";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const errors = useSelector((state) => state.error.value);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-  const errors = useSelector((state) => state.error.value);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({...formData, [name]: value})
@@ -32,7 +32,7 @@ function Login() {
         resp.json().then(user => {
           dispatch(updateMe(user));
           dispatch(updateErrors([]))
-          navigate(`/`)
+          navigate(`/home`)
         })
       } else {
         resp.json().then(json => {
@@ -42,15 +42,17 @@ function Login() {
     })
   };
 
+  const fieldClass = "h3 mb-3 fw-normal";
+  const buttonClass = "w-100 btn btn-lg btn-primary";
+
   return (
     <div>
         <h1>Log In</h1>
-
       <form onSubmit={handleSubmit}>
 
         <div>
         <input
-          className="h3 mb-3 fw-normal"
+          className={fieldClass}
           type="text"
           name="username"
           value={formData.username}
@@ -61,7 +63,7 @@ function Login() {
         
         <div>
         <input
-          className="h3 mb-3 fw-normal"
+          className={fieldClass}
           type="password"
           name="password"
           value={formData.password}
@@ -71,7 +73,7 @@ function Login() {
         </div>
         
         {errors.map((error, i) => <p key={i}>{error}</p>)}
-        <input type="submit" value="Log in" />
+        <input className={buttonClass} type="submit" value="Log in" />
       </form>
     </div>
   );

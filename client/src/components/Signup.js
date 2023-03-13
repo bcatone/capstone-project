@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { updateErrors } from '../redux/error/errorSlice';
+import { useSelector, useDispatch } from "react-redux";
+import { updateErrors } from "../redux/error/errorSlice";
 import { updateMe } from "../redux/me/meSlice";
-import { useNavigate } from "react-router"
-import { Country, State, City} from "country-state-city"
+import { useNavigate } from "react-router";
 import { updateCountries } from "../redux/countries/countriesSlice";
-// import { Country, State, City, csc } from 'country-state-city';
+import { Country, State, City, csc } from 'country-state-city';
 
 function Signup() {
   const [formOptions, setFormOptions] = useState({
     countries: [],
     states: [],
-    cities: []
+    cities: [],
   });
   const [avatarDisplayUrl, setAvatarDisplayUrl] = useState("");
-  
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -28,52 +27,49 @@ function Signup() {
     state_id: "",
     city_id: "",
     zip_code: "",
-    avatar: ""
+    avatar: "",
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const errors = useSelector((state) => state.error.value);
 
   useEffect(() => {
-    fetch("/countries")
-    .then(resp => {
+    fetch("/countries").then((resp) => {
       if (resp.ok) {
-        resp.json().then(countries => {
-          dispatch(updateCountries)
-          setFormOptions({...formOptions, countries: countries})
-      })
+        resp.json().then((countries) => {
+          dispatch(updateCountries);
+          setFormOptions({ ...formOptions, countries: countries });
+        });
       } else {
-        resp.json().then(errors => console.log(errors))
+        resp.json().then((errors) => console.log(errors));
       }
     });
   }, []);
 
   const handleCountrySelection = (e) => {
-    const country_id = e.target.value
-    fetch(`/countries/${country_id}`)
-    .then(resp => {
+    const country_id = e.target.value;
+    fetch(`/countries/${country_id}`).then((resp) => {
       if (resp.ok) {
-        resp.json().then(states => {
-          setFormOptions({...formOptions, states: states.states});
-          setFormData({...formData, country_id: country_id});
-        })
+        resp.json().then((states) => {
+          setFormOptions({ ...formOptions, states: states.states });
+          setFormData({ ...formData, country_id: country_id });
+        });
       } else {
-        resp.json().then(json => console.log(json))
+        resp.json().then((json) => console.log(json));
       }
     });
   };
 
   const handleStateSelection = (e) => {
-    const state_id = e.target.value
-    fetch(`states/${state_id}`)
-    .then(resp => {
+    const state_id = e.target.value;
+    fetch(`states/${state_id}`).then((resp) => {
       if (resp.ok) {
-        resp.json().then(cities => {
-          setFormOptions({...formOptions, cities: cities.cities});
-          setFormData({...formData, state_id: state_id})
-        })
+        resp.json().then((cities) => {
+          setFormOptions({ ...formOptions, cities: cities.cities });
+          setFormData({ ...formData, state_id: state_id });
+        });
       } else {
-        resp.json().then(json => console.log(json))
+        resp.json().then((json) => console.log(json));
       }
     });
   };
@@ -82,11 +78,11 @@ function Signup() {
     let currentDate = new Date();
     let year = currentDate.getFullYear() - 13;
     let month = currentDate.getMonth() + 1;
-    month = month.toString().padStart(2, '0');
+    month = month.toString().padStart(2, "0");
     let day = currentDate.getDate();
-    day = day.toString().padStart(2, '0');
+    day = day.toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
-};
+  };
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -97,7 +93,7 @@ function Signup() {
 
     if (name === "avatar") {
       value = e.target.files[0];
-      setAvatarDisplayUrl(URL.createObjectURL(value))
+      setAvatarDisplayUrl(URL.createObjectURL(value));
     }
 
     setFormData({ ...formData, [name]: value });
@@ -127,147 +123,204 @@ function Signup() {
 
     fetch(`/users`, {
       method: "POST",
-      body: data
-    }).then(resp => {
+      body: data,
+    }).then((resp) => {
       if (resp.ok) {
         resp.json().then((user) => {
-          navigate("/login");
+          fetch('/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: formData.username, password: formData.password})
+          })
+          .then(resp=> {
+            if (resp.ok) {
+              resp.json().then(user => dispatch(updateMe(user)));
+              navigate('/');
+            } else {
+              resp.json().then(json => console.log([json.errors]));
+            }
+          })
         });
       } else {
-        resp.json().then(json => {
-          console.log(json)
+        resp.json().then((json) => {
+          console.log(json);
           dispatch(updateErrors([json.errors]));
-        })
-    }
+        });
+      }
     });
   };
 
+  // Styles
+  const loginClass = "form-signin w-100 m-auto"
+  const fieldClass = "h3 mb-3 fw-normal";
+  const buttonClass = "w-20 btn btn-lg btn-primary";
+
   return (
-    <div>
+    <div className={loginClass}>
       <h1>Sign Up</h1>
-      <form encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={handleSubmit}>
+      <form
+        encType="multipart/form-data"
+        acceptCharset="UTF-8"
+        onSubmit={handleSubmit}
+      >
 
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="text"
-          name="username"
-          value={formData.userName}
-          placeholder="*Enter username"
-          onChange={handleChange}
-          required
-        />
+          <input
+            className={fieldClass}
+            type="text"
+            name="username"
+            value={formData.userName}
+            placeholder="*Enter username"
+            onChange={handleChange}
+            required
+          />
         </div>
-        
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="password"
-          name="password"
-          value={formData.password}
-          placeholder="*Enter password"
-          onChange={handleChange}
-          required
-        />
+          <input
+            className={fieldClass}
+            type="password"
+            name="password"
+            value={formData.password}
+            placeholder="*Enter password"
+            onChange={handleChange}
+            required
+          />
         </div>
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="email"
-          name="email"
-          value={formData.userName}
-          placeholder="Enter email"
-          onChange={handleChange}
-        />
+          <input
+            className={fieldClass}
+            type="email"
+            name="email"
+            value={formData.userName}
+            placeholder="Enter email"
+            onChange={handleChange}
+          />
         </div>
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="tel"
-          name="phone_number"
-          value={formData.phone_number}
-          placeholder="Enter phone number"
-          onChange={handleChange}
-        />
+          <input
+            className={fieldClass}
+            type="tel"
+            name="phone_number"
+            value={formData.phone_number}
+            placeholder="Enter phone number"
+            onChange={handleChange}
+          />
         </div>
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="text"
-          name="*first_name"
-          value={formData.first_name}
-          placeholder="*Enter first name"
-          onChange={handleChange}
-          required
-        />
+          <input
+            className={fieldClass}
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            placeholder="*Enter first name"
+            onChange={handleChange}
+            required
+          />
         </div>
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="text"
-          name="*last_name"
-          value={formData.last_name}
-          placeholder="*Enter last name"
-          onChange={handleChange}
-          required
-        />
+          <input
+            className={fieldClass}
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            placeholder="*Enter last name"
+            onChange={handleChange}
+            required
+          />
         </div>
+
         <div>
-        <input
-          className="h3 mb-3 fw-normal"
-          type="date"
-          name="date_of_birth"
-          value={(formData.date_of_birth)}
-          max={getMinDateOfBirth()}
-          onChange={handleChange}
-        />
+          <input
+            className={fieldClass}
+            type="date"
+            name="date_of_birth"
+            value={formData.date_of_birth}
+            max={getMinDateOfBirth()}
+            onChange={handleChange}
+          />
         </div>
+
         <div>
-        <select className="h3 mb-3 fw-normal" onChange={handleCountrySelection} name="country_id" value={formData.country_id}>
-          {formOptions.countries.map(country => (
-            <option key={country.id} value={country.id}>{country.name}</option>
-          ))}
-        </select>
+          <select defaultValue={""}
+            className={fieldClass}
+            onChange={handleCountrySelection}
+            name="country_id"
+            value={formData.country_id}
+          >
+            <option value="" disabled>Select a country:</option>
+            {formOptions.countries.map((country) => (
+              <option key={country.id} value={country.id}>
+                {country.name}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {formData.country ? (
+          <div>
+          <select defaultValue={""}
+            className={fieldClass}
+            onChange={handleStateSelection}
+            name="state_id"
+          >
+            <option value="" disabled>Select a state:</option>
+            {formOptions.states.map((state) => (
+              <option key={state.id} value={state.id}>
+                {state.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        ) : null}
+
+        {formData.state_id ? (
+          <div>
+          <select className={fieldClass} onChange={handleChange} name="city_id" defaultValue={""}>
+          <option value="" disabled>Select a city:</option>
+            {formOptions.cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        ) : null}
+
         <div>
-        <select onChange={handleStateSelection} name="state_id">
-          {formOptions.states.map(state => (
-            <option key={state.id} value={state.id}>{state.name}</option>
-          ))}
-        </select>
+          <input
+            className={fieldClass}
+            type="text"
+            name="zip_code"
+            value={formData.zip_code}
+            placeholder="Enter zip code"
+            onChange={handleChange}
+          />
         </div>
-        <div>
-        <select onChange={handleChange} name="city_id">
-          {formOptions.cities.map(city => (
-            <option key={city.id} value={city.id}>{city.name}</option>
-          ))}
-        </select>
-        </div>
-        <div>
-        <input
-          type="text"
-          name="zip_code"
-          value={formData.zip_code}
-          placeholder="Enter zip code"
-          onChange={handleChange}
-        />
-        </div>
+
         <div>
           <img className="avatar-preview" src={avatarDisplayUrl} />
-        <label>Upload a profile picture: </label>
-        <input
-          type="file"
-          multiple={false}
-          name="avatar"
-          onChange={handleChange}
-        />
+          <div className="form-group">
+            <label className={fieldClass}>Upload a profile picture: </label>
+            <input
+              className={fieldClass}
+              type="file"
+              multiple={false}
+              name="avatar"
+              onChange={handleChange}
+            />
+          </div>
+
         </div>
-        {errors.map(error => <p>{error}</p>)}
+        {errors.map((error) => (
+          <p>{error}</p>
+        ))}
         <div>
-        <input
-          type="submit"
-          value="Sign up"
-        />
+          <input className={buttonClass} type="submit" value="Sign up" />
         </div>
       </form>
     </div>

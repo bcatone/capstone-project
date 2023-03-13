@@ -24,10 +24,4 @@ class ApplicationController < ActionController::API
       render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
     end
 
-
-  
-    # def hello_world
-    #   session[:count] = (session[:count] || 0) + 1
-    #   render json: { count: session[:count] }
-    # end
   end

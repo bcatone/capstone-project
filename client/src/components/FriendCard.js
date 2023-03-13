@@ -16,14 +16,15 @@ function FriendCard({user}) {
     const handleUnfriendUser = () => {
         const filteredFriends = friends.filter(friend => friend.id !== user.id);
 
-        fetch(`/users/${me.id}/friends/${user.id}`, {
-            method: 'DELETE'
-        })
+        fetch(`/users/${me.id}/friends/${user.id}`, {method: 'DELETE'})
         .then (resp => {
             if (resp.ok) {
                 resp.json().then(dispatch(updateFriends(filteredFriends)))
             } else {
-                resp.json().then(json => dispatch(updateErrors([json.errors])))
+                resp.json().then(json => {
+                    console.log(json.errors)
+                    dispatch(updateErrors([json.errors]))
+                })
             }
         })
     }

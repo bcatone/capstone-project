@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-    #CRUD
     has_many :friendships, dependent: :destroy
     has_many :direct_message_lists, through: :friendships
     has_many :friends, through: :friendships
@@ -9,8 +8,7 @@ class User < ApplicationRecord
 
     has_many :friend_requests
 
-    has_many :user_posts, dependent: :destroy
-    has_many :posts, through: :posts
+    has_many :posts
     
     has_many :senders, through: :friend_requests
     has_many :receivers, through: :friend_requests
@@ -60,9 +58,59 @@ class User < ApplicationRecord
         friendsArr
     end
 
+    def connected_friendships
+        friendshipArr = []
+        friendships = Friendship.where(friend: self)
+        friendships.each do |friendship|
+            friendshipArr << friendship
+        end
+        friendships = Friendship.where(user: self)
+        friendships.each do |friendship|
+            friendshipArr << friendship
+        end
+        friendshipArr
+    end
+
+    def conversation_info
+        conversationArr = []
+        friendships = self.connected_friendships
+        friendships.each do |friendship|
+            friendship_id = friendship.id
+            direct_message_id = DirectMessageList.find_by(friendship_id: friendship_id).id
+            if friendship.friend_id === self.id
+                user_id = User.find_by!(id: friendship.user_id).id
+                username = User.find_by!(id: friendship.user_id).username
+            else
+                user_id = User.find_by!(id: friendship.friend_id).id
+                username = User.find_by!(id: friendship.friend_id).username
+            end
+            conversationArr << {direct_message_id: direct_message_id, friendship_id: friendship_id, user_id: user_id, username: username}
+        end
+        conversationArr
+        
+    end
+
+    def is_friend?(user)
+        friends = self.connected_friends
+        bool = false
+        friends.each do |friend|
+            if friend.id == user.id
+                return true
+            end
+        end
+        false
+    end
+
     def suggested_friends
         # Add more complex logic here later
-        User.where.not(id: self.id)
+        suggestions = [];
+        users = User.where.not(id: self.id)
+        users.each do |user|
+            if !self.is_friend?(user)
+                suggestions << user
+            end
+        end
+        suggestions
     end
 
     def latitude
@@ -73,11 +121,11 @@ class User < ApplicationRecord
         self.city.longitude.to_f
     end
 
-    # def calculate_approx_distance_from_user(user)
-    #     a = (self.latitude - user.latitude) ** 2
-    #     b = (self.longitude - user.longitude) ** 2
-    #     distance = Math::sqrt(a + b)
-    # end
+    def calculate_approx_distance_from_user(user)
+        a = (self.latitude - user.latitude) ** 2
+        b = (self.longitude - user.longitude) ** 2
+        distance = Math::sqrt(a + b)
+    end
 
     # def common_interests_with_user(user)
     #     self_interests = self.interests

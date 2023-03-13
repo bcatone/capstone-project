@@ -19,7 +19,10 @@ function FriendRequestsContainer() {
     fetch(`/users/${me.id}/friend_requests`)
         .then(resp => {
             if (resp.ok) {
-                resp.json().then(friendRequestsArr => dispatch(updateFriendRequests(friendRequestsArr)));
+                resp.json().then(friendRequestsArr => {
+                  console.log(friendRequestsArr)
+                  dispatch(updateFriendRequests(friendRequestsArr))
+                });
             } else {
                 resp.json().then((json) => dispatch(updateErrors([json.errors])))
             }
@@ -29,6 +32,7 @@ function FriendRequestsContainer() {
   return (
     <div className="row">
       <p>Friend Requests</p>
+      {console.log(friendRequests)}
       {friendRequests.length > 0
         ? friendRequests.map((user) => <FriendRequestCard key={user.id} user={user} />)
         : errors.map((error, i) => <p key={i}>{error}</p>)}

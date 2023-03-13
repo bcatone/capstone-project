@@ -21,6 +21,6 @@ class DirectMessagesController < ApplicationController
     private
 
     def direct_message_params
-        params.require(:post).permit(:direct_message_list, sender_id, :receiver_id, :message)
+        params.require(:direct_message).permit(:direct_message_list_id, :sender_id, :receiver_id, :message, :is_read?)
     end
 end

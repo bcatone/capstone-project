@@ -10,8 +10,11 @@ import { updateLoading } from "../redux/loading/loadingSlice";
 import NavBar from "./NavBar";
 import MeCard from "./MeCard";
 import InboxContainer from "./InboxContainer";
+import Footer from "./Footer";
 
 function Layout() {
+  const me = useSelector((state) => state.me.value)
+  
   return (
     <div className="container-fluid">
       <div className="row">
@@ -26,6 +29,7 @@ function Layout() {
           <Outlet />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

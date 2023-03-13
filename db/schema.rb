@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_192325) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_13_140247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -110,7 +110,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_192325) do
     t.bigint "direct_message_list_id", null: false
     t.bigint "sender_id", null: false
     t.bigint "receiver_id", null: false
-    t.boolean "is_read?"
+    t.boolean "is_read?", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "message"
@@ -174,6 +174,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_192325) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "url", default: ""
   end
 
   create_table "regions", force: :cascade do |t|
@@ -262,10 +263,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_192325) do
     t.string "middle_name"
     t.string "last_name"
     t.datetime "date_of_birth"
+    t.string "zip_code"
     t.bigint "country_id"
     t.bigint "state_id"
     t.bigint "city_id"
-    t.string "zip_code"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -286,4 +287,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_192325) do
   add_foreign_key "user_posts", "users"
   add_foreign_key "user_projects", "projects"
   add_foreign_key "user_projects", "users"
+  add_foreign_key "users", "cities"
+  add_foreign_key "users", "countries"
+  add_foreign_key "users", "states"
 end

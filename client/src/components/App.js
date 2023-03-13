@@ -17,6 +17,7 @@ import FriendPage from './FriendPage';
 import ProjectsContainer from './ProjectsContainer';
 import Project from './Project';
 import InterestProfilerForm from './InterestProfilerForm';
+import CancelAccount from './CancelAccount';
 
 function App() {
   const me = useSelector((state) => state.me.value);
@@ -26,12 +27,18 @@ function App() {
     fetch('/me')
     .then(resp => {
       if (resp.ok) {
-        resp.json().then(user => dispatch(updateMe(user)));
+        resp.json().then(user => {
+          dispatch(updateMe(user))
+          dispatch(updateErrors([]))
+        });
       } else {
-        resp.json().then(json => updateErrors([json.errors]));
+        resp.json().then(json => {
+          console.log(json)
+          dispatch(updateErrors([]))
+        });
       }
     })
-  }, []);
+  }, [dispatch]);
 
   if (!me.username) {
     return (
@@ -45,7 +52,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />}/>
             <Route path="/home" element={<Home />} />
-            <Route path="/messages/:id" element={<DirectMessageList />} />
+            <Route path="/user/:user_id/messages/:id" element={<DirectMessageList />} />
+            <Route path="user/:id/cancel_account" element={<CancelAccount />} />
             <Route path="/user/:id/account_settings" element={<Settings />} />
             <Route path="/user/:id" element={<UserProfile />} />
             <Route path="/network/people" element={<FriendSuggestionsContainer />} />

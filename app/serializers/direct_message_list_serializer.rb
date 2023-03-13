@@ -1,5 +1,5 @@
 class DirectMessageListSerializer < ActiveModel::Serializer
-  attributes :id, :user_1_id, :user_2_id, :username1, :username2, :direct_messages
+  attributes :id, :user_1_id, :user_2_id, :username1, :username2
 
   has_many :direct_messages
 
@@ -22,5 +22,10 @@ class DirectMessageListSerializer < ActiveModel::Serializer
     username = self.object.friendship.friend.username
     username
   end
+
+  def direct_messages
+    messages = self.object.direct_messages
+  end
+  
 
 end

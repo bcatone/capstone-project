@@ -2,13 +2,12 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-function InboxOption ({id, username1, username2}) {
+function InboxOption ({messageInfo}) {
     const me = useSelector((state) => state.me.value)
-    const username = (me.username === username2) ? username1 : username2
+
     return (
         <div className="inbox-option">
-            {/* <span><img url={user.avatar.url} /></span> */}
-            <Link to={`/messages/${id}`}>{username}</Link>
+            <Link to={`/user/${me.id}/messages/${messageInfo.direct_message_id}`}>{messageInfo.username}</Link>
         </div>
     );
 };

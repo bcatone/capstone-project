@@ -1,5 +1,5 @@
 class StatesController < ApplicationController
-    skip_before_action :authorized_user, only: [:show]
+    skip_before_action :authorized_user
 
     def show
         render json: State.find(params[:id]), status: :ok

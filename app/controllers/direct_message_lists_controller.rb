@@ -2,7 +2,8 @@ class DirectMessageListsController < ApplicationController
     wrap_parameters format: []
 
     def index
-        render json: DirectMessageList.all, status: :ok
+        direct_message_lists = DirectMessageList.where(user_1_id: params(:user_id)).or(DirectMessageList.where(user_2_id: params[:id]))
+        render json: direct_message_lists, status: :ok
     end
 
     def show

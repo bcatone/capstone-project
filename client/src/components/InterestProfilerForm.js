@@ -8,7 +8,7 @@ This data uses information from O*NET
 
 function InterestProfilerForm() {
   const [questions, setQuestions] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,10 +28,19 @@ function InterestProfilerForm() {
     });
   }, []);
 
+  const developmentRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
+  const developmentRandomAnswerString = () => {
+    let answer_string = "";
+  }
+
+  
+
   const onChange = (e) => {
     const { name, value } = e.target;
-    console.log(name)
-    console.log(value)
+    console.log(formData)
     setFormData({...formData, [name]: value});
   };
 
@@ -41,12 +50,15 @@ function InterestProfilerForm() {
     
     for (let i = 0; i < questions.length; i++) {
        answerString += formData[i];
+       console.log(answerString)
     }
+
+    console.log(answerString);
 
     fetch("/interest_profiles", {
       method: 'CREATE',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(formData)
+      body: JSON.stringify({answer_string: "553421321134342523523523254115342111351145453111231155343444"})
     })
     .then(resp => {
       if (resp.ok) {

@@ -1,5 +1,5 @@
 class FriendshipsController < ApplicationController
-    # skip_before_action :authorized_user
+    skip_before_action :authorized_user
     wrap_parameters format: []
 
     def show
@@ -7,13 +7,11 @@ class FriendshipsController < ApplicationController
     end
 
     def create
-        accepted_request = FriendRequest.find_by(sender: params[:friend_id], receiver: params[:user_id])
-        # if !accepted_request
-        #     accepted_request = FriendRequest.find_by!(sender: params[:user], receiver: params[:friend])
-        # end
+        accepted_request = FriendRequest.find_by!(sender: params[:friend_id], receiver: params[:user_id])
         friendship = Friendship.create!(friendship_params)
         accepted_request.destroy!
-        render json: friendship, status: :created
+        DirectMessageList.create!(friendship_id: friendship.id)
+        render json: friendship.friend, status: :created
     end
 
     def update

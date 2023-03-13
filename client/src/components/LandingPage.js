@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
+import Footer from "./Footer";
 
 function LandingPage() {
   return (
@@ -8,6 +9,8 @@ function LandingPage() {
         <Login />
         <hr />
         <Signup />
+        <hr />
+        <Footer />
     </div>
   );
 }

@@ -13,7 +13,6 @@ function NavBar() {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.me.value);
 
-
   const logout = () => {
     dispatch(updateMe({}));
     dispatch(updateFriends([]));
@@ -37,9 +36,9 @@ function NavBar() {
     });
   };
 
-    return (
-        <div>
-            <nav className="navbar navbar-expand-sm bg-body-tertiary">
+  return (
+    <div>
+      <nav className="navbar navbar-expand-sm bg-body-tertiary">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             Capstone Project
@@ -57,7 +56,6 @@ function NavBar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-
               {/* Home */}
               <li className="nav-item">
                 <Link
@@ -87,7 +85,10 @@ function NavBar() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to={`user/${me.id}/portfolio`}>
+                    <Link
+                      className="dropdown-item"
+                      to={`user/${me.id}/portfolio`}
+                    >
                       View Portfolio
                     </Link>
                   </li>
@@ -95,7 +96,10 @@ function NavBar() {
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <Link className="dropdown-item" to={`/user/${me.id}/account_settings`}>
+                    <Link
+                      className="dropdown-item"
+                      to={`/user/${me.id}/account_settings`}
+                    >
                       Account Settings
                     </Link>
                   </li>
@@ -150,28 +154,79 @@ function NavBar() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to={`/explore/interest_profiler`}>
+                    <Link
+                      className="dropdown-item"
+                      to={`/explore/interest_profiler`}
+                    >
                       Take O*Net Interest Profiler Test
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to={`/explore/career_insights`}>
+                    <Link
+                      className="dropdown-item"
+                      to={`/explore/career_insights`}
+                    >
                       View Career Insights
                     </Link>
                   </li>
                 </ul>
               </li>
+              {/* Account */}
+
+              <li className="nav-item dropdown">
+                <Link
+                  className="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  to={`/user/${me.id}`}
+                >
+                  Account
+                </Link>
+                <ul className="dropdown-menu">
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to={`/user/${me.id}/account_settings`}
+                    >
+                      Profile Settings
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to={`user/${me.id}/portfolio`}
+                    >
+                      Change Password
+                    </Link>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to={`/user/${me.id}/account_settings`}
+                    >
+                      Sign Out
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to={`/user/${me.id}/cancel_account`}
+                    >
+                      Cancel Account
+                    </Link>
+                  </li>
+                </ul>
+              </li>
             </ul>
-
-            
-
-            
-
           </div>
         </div>
       </nav>
-        </div>
-    );
-};
+    </div>
+  );
+}
 
 export default NavBar;

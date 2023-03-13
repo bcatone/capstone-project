@@ -51,18 +51,23 @@ function CancelAccount() {
         <div>
             <h3>Cancel Account</h3>
             <form onSubmit={handleAccountCancellation}>
-                <input
+              <div>
+              <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={onChange}
                   placeholder="Enter password"
                 />
+              </div>
+                <div>
                 <input
                   type="checkbox"
                   required
                 />
-                <label>I really wish to cancel my account. </label>
+                <label> I wish to cancel my account and understand my information will be lost. </label>
+                </div>
+                
                 <input type="submit" value="Cancel Account" />
             </form>
             {/* {errors.length > 0 ? errors.map(error => <p>{error}</p>) : null } */}

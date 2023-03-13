@@ -7,11 +7,11 @@ function MeCard() {
     
     return (
         <div className="me-card">
+            {console.log(me)}
             <img className="avatar" src={me.avatar.url} alt="avatar" />
             <div><Link to={`/user/${me.id}`} >{me.full_name}</Link></div>
             <div>{me.location}</div>
-            <div>Age: {me.age}</div>
-            <div>{me.location ? me.location : null}</div>
+            
         </div>
     );
 };

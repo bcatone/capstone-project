@@ -11,40 +11,18 @@ function InboxContainer() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    fetch(`/users/${me.id}/direct_message_lists`).then((resp) => {
-      if (resp.ok) {
-        resp.json().then((directMessageLists) => {
-          console.log(directMessageLists);
-          dispatch(updateDirectMessageLists(directMessageLists));
-        });
-      }
-    });
-  }, []);
+  // me.conversation_info.map((info) => console.log(info.direct_message_id));
 
   return (
     <div className="inbox">
       <div className="inbox-title">Messages</div>
-      {messageLists.map((messageList) => <InboxOption key={messageList.id} id={messageList.id} username1={messageList.username1} username2={messageList.username2}/>)}
+      {me.conversation_info ? me.conversation_info.map((info, i) => (
+        <InboxOption
+          key={i}
+          messageInfo={info}
+        />
+      )) : null}
     </div>
-    // <div className="inbox-container">
-    //   <div className="inbox-title">Direct Messages</div>
-    //   <InboxOption user={me} />
-    // </div>
-    //     <ul class="list-group">
-    //   <li class="list-group-item d-flex justify-content-between align-items-center">
-    //     A list item
-    //     <span class="badge bg-primary rounded-pill">14</span>
-    //   </li>
-    //   <li class="list-group-item d-flex justify-content-between align-items-center">
-    //     A second list item
-    //     <span class="badge bg-primary rounded-pill">2</span>
-    //   </li>
-    //   <li class="list-group-item d-flex justify-content-between align-items-center">
-    //     A third list item
-    //     <span class="badge bg-primary rounded-pill">1</span>
-    //   </li>
-    // </ul>
   );
 }
 
