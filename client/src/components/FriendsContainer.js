@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateFriends } from '../redux/friends/friendsSlice';
-import { updateErrors } from '../redux/error/errorSlice';
+import { updateFriends } from "../redux/friends/friendsSlice";
+import { updateErrors } from "../redux/error/errorSlice";
 import FriendCard from "./FriendCard";
-import UserCard from "./UserCard";
 
 function FriendsContainer() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const me = useSelector((state) => state.me.value);
   const friends = useSelector((state) => state.friends.value);
@@ -23,11 +22,13 @@ function FriendsContainer() {
   }, []);
 
   return (
-    <div className="row">
-      <p>Friends</p>
-      {friends.length > 0
-        ? friends.map((friend) => <FriendCard key={friend.id} user={friend} />)
-        : errors.map((error, i) => <p key={i}>{error}</p>)}
+    <div className="connection-container text-dark">
+      <div className="fs-3">My Friends</div>
+      <div className="contents">
+        {friends.map((friend) => (
+          <FriendCard key={friend.id} user={friend} />
+        ))}
+      </div>
     </div>
   );
 }

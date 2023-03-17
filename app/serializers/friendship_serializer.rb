@@ -1,10 +1,8 @@
 class FriendshipSerializer < ActiveModel::Serializer
-  attributes :friend, direct_message_list
+  attributes :user, :friend, direct_message_list, :direct_message_list
   
   has_one :friend
-  # has_one :direct_message_list
+  has_one :user
+  has_one :direct_message_list
 
-  def direct_message_list
-    
-  end
 end

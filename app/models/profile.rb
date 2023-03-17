@@ -1,4 +1,3 @@
 class Profile < ApplicationRecord
-  belongs_to :user
-  belongs_to :interest_profile
+  belongs_to :user_id
 end

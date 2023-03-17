@@ -25,7 +25,7 @@ function PostContainer() {
       }
 
     return (
-        <div>
+        <div className="post-container bg-secondary-subtle bg-gradient text-dark">
             <CreatePostForm />
             {posts.map(post => <PostPreview key={post.id} post={post} />)}
         </div>

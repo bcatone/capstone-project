@@ -38,14 +38,13 @@ function FriendSuggestionCard({user}) {
     }
     
     return (
-        <div className="col user_card">
+        <div className="col user_card bg-secondary-subtle">
             <img src={user.avatar.url} alt="avatar"/> 
-            {/* <a onClick={handleClickOnUser}>{user.username}</a> */}
             <Link to={`/user/${user.id}`}>{user.username}</Link>
-            <p>{user.full_name}</p>
-            <p>{user.age} years old</p>
-            <p>{user.location}</p>
-            {me.id !== user.id ? (<button onClick={handleSendFriendRequest}>Connect</button>) : null}
+            <div>{user.full_name}</div>
+            <div>{user.career_title}</div>
+            <div>{user.location}</div>
+            {me.id !== user.id ? (<button className="btn btn-primary" onClick={handleSendFriendRequest}>Connect</button>) : null}
         </div>
     )
 };

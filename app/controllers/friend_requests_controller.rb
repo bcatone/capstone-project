@@ -3,7 +3,7 @@ class FriendRequestsController < ApplicationController
     wrap_parameters format: []
 
     def index
-        friend_requests = FriendRequest.where(receiver: params[:user_id])
+        friend_requests = FriendRequest.where(receiver_id: params[:user_id])
         users = []
         friend_requests.each do |friend_request|
             users << friend_request.sender

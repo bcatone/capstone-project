@@ -16,7 +16,7 @@ function Layout() {
   const me = useSelector((state) => state.me.value)
   
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="row">
         <NavBar />
       </div>
@@ -29,7 +29,7 @@ function Layout() {
           <Outlet />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

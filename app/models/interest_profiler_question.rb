@@ -1,5 +1,5 @@
 class InterestProfilerQuestion < ApplicationRecord
-    # R
     def index
+        render json: InterestProfilerQuestion.all, status: :ok
     end
 end

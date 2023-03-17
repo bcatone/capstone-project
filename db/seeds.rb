@@ -4,8 +4,10 @@ require 'net/http'
 require 'openssl'
 require './app/OnetWebService'
 require 'json'
+require process.env.REACT_APP_SECRET_USERNAME
+require process.env.REACT_APP_SECRET_PASSWORD
 
-onet_ws = OnetWebService.new("student5", "5563ijd")
+onet_ws = OnetWebService.new(REACT_APP_SECRET_USERNAME, REACT_APP_SECRET_PASSWORD)
 
 puts "Seeding direct message lists..."
 friendships = Friendship.all

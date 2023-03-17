@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    skip_before_action :authorized_user, only: [:show, :create]
+    skip_before_action :authorized_user, only: [:index, :show, :create]
     wrap_parameters format: []
 
     def index
@@ -53,17 +53,19 @@ class UsersController < ApplicationController
     def destroy
         user = User.find_by(id: params[:id])
         if user&.authenticate(params[:password])
-            user.destroy!
+            friendships = Friendship.where(user_id: params[:id]).or(Friendship.where(friend_id: params[:id]))
+            friendships.destroy_all
+            direct_message_lists = DirectMessageList.where(user_1_id: params[:id]).or(DirectMessageList.where(user_2_id: params[:id]))
+            user.destroy
             head :no_content
-            render json: user, status: :created
         else 
-            render json:{ errors: "Invalid username or password"}, status: :unauthorized
+            render json:{ errors: "Invalid password"}, status: :unauthorized
         end
     end
 
     private
 
     def user_params
-        params.permit(:username, :password, :email, :phone_number, :first_name, :middle_name, :last_name, :date_of_birth, :country_id, :state_id, :city_id, :zip_code, :avatar)
+        params.permit(:username, :password, :email, :phone_number, :first_name, :middle_name, :last_name, :date_of_birth, :country_id, :state_id, :city_id, :zip_code, :career_title, :avatar)
     end
 end

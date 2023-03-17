@@ -5,13 +5,13 @@ import { updateMe } from "../redux/me/meSlice";
 
 function EditAvatar({ onAvatarSelection }) {
   const me = useSelector((state) => state.me.value);
+  const errors = useSelector((state) => state.error.value);
   const [displayImgUrl, setDisplayImgUrl] = useState(me.avatar);
   const [avatar, setAvatar] = useState("");
   const dispatch = useDispatch();
 
-  
   const handleChange = (e) => {
-    const value = e.target.files[0]
+    const value = e.target.files[0];
     setAvatar(value);
     onAvatarSelection(value);
   };
@@ -24,7 +24,7 @@ function EditAvatar({ onAvatarSelection }) {
 
     fetch(`/users/${me.id}`, {
       method: "PATCH",
-      body: formData
+      body: formData,
     }).then((resp) => {
       if (resp.ok) {
         resp.json().then((me) => dispatch(updateMe(me)));
@@ -36,6 +36,13 @@ function EditAvatar({ onAvatarSelection }) {
 
   return (
     <div>
+      {errors.length > 0 ? (
+        <div className="alert alert-danger">
+          {errors.map((error, i) => (
+            <p key={i}>{error}</p>
+          ))}
+        </div>
+      ) : null}
       <form onSubmit={handleSubmit}>
         <input
           type="file"

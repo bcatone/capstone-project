@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { updateErrors } from "../redux/error/errorSlice";
 import { updateDirectMessageLists } from "../redux/direct_message_lists/directMessageListsSlice";
 import ReactQuill from "react-quill";
@@ -9,14 +9,13 @@ import ReactQuill from "react-quill";
 function DirectMessageList() {
   const [friendId, setFriendId] = useState("");
   const me = useSelector((state) => state.me.value);
-  const errors = useSelector((state) => state.error.value);
-  const messageList = useSelector((state) => state.direct_message_lists.value);
   const { id } = useParams();
-  const [conversationId, setConversationId] = useState(id)
+  const [conversationId, setConversationId] = useState(id);
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const parse = require("html-react-parser");
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log();
@@ -28,15 +27,15 @@ function DirectMessageList() {
               ? messageList.user_1_id
               : messageList.user_2_id;
           setFriendId(otherId);
-          setConversationId(messageList.id)
+          setConversationId(messageList.id);
           dispatch(updateDirectMessageLists(messageList.direct_messages));
-          setMessages(messageList.direct_messages)
+          setMessages(messageList.direct_messages);
         });
       } else {
-        resp.json().then((json) => dispatch(updateErrors([json.errors])));
+        navigate("/");
       }
     });
-  }, [dispatch, id]);
+  }, [dispatch, id, me.id, navigate]);
 
   const handleMessageChange = (value) => {
     setMessage(value);
@@ -53,26 +52,34 @@ function DirectMessageList() {
     };
 
     fetch("/direct_messages", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-        }
-    )
-    .then(resp => {
-        if (resp.ok) {
-            resp.json().then(message => setMessages([...messages, message]))
-        } else {
-          resp.json().then(json => dispatch(updateErrors([json.errors])))
-        }
-    })
-
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((message) => setMessages([...messages, message]));
+      } else {
+        resp.json().then((json) => dispatch(updateErrors([json.errors])));
+      }
+    });
   };
 
   return (
-    <div>
-        <div>
-        {messages.map(message => <div key={message.id}>{parse(message.message)}</div>)}
-        </div>
+    <div className="bg-secondary-subtle bg-gradient text-dark">
+      <div className="message-body">
+        {messages.map((message) => (
+          <div key={message.id}>
+            <div>
+              <span>
+                <strong>{message.sender.username} </strong>
+              </span>
+              <span> {message.created_at}</span>
+            </div>
+            <div>{parse(message.message)}</div>
+            <hr />
+          </div>
+        ))}
+      </div>
       <div>
         <form onSubmit={handleSubmit}>
           <ReactQuill
@@ -80,12 +87,9 @@ function DirectMessageList() {
             value={message}
             onChange={handleMessageChange}
           ></ReactQuill>
-          <input type="submit" value="Send" />
-          <p>{errors}</p>
+          <input className="btn btn-primary" type="submit" value="Send" />
         </form>
       </div>
-
-      {/* <CreateDirectMessageForm conversationId={id} senderId={me.id} receiverId={friendId}/> */}
     </div>
   );
 }

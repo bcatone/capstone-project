@@ -1,5 +1,5 @@
 class DirectMessageListSerializer < ActiveModel::Serializer
-  attributes :id, :user_1_id, :user_2_id, :username1, :username2
+  attributes :id, :user_1_id, :user_2_id, :username1, :username2, :direct_messages, :num_unreads
 
   has_many :direct_messages
 

@@ -6,16 +6,17 @@ import { updateErrors } from "../redux/error/errorSlice";
 import { updateProjects } from "../redux/projects/projectsSlice";
 
 function AddProjectForm() {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "Testing",
-    image: "",
-    url: "",
-  });
-  const [imageUrl, setImageUrl] = useState("");
+  const me = useSelector((state) => state.me.value);
   const errors = useSelector((state) => state.error.value);
   const projects = useSelector((state) => state.projects.value);
   const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    image: "",
+    contributors: [me]
+  });
+  const [imageUrl, setImageUrl] = useState("");
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -44,7 +45,7 @@ function AddProjectForm() {
       data.append("image", formData.image);
     }
 
-    fetch("/projects", {
+    fetch(`users/${me.id}/projects`, {
       method: "POST",
       body: data,
     }).then((resp) => {
@@ -55,7 +56,6 @@ function AddProjectForm() {
       } else {
         resp.json().then((json) => {
           dispatch(updateErrors([json.errors]));
-          console.log(errors);
         });
       }
     });
@@ -63,6 +63,15 @@ function AddProjectForm() {
 
   return (
     <div>
+      
+      {errors.length > 0 ? (
+        <div className="row alert alert-danger">
+          {errors.map((error, i) => (
+            <p key={i}>{error}</p>
+          ))}
+        </div>
+      ) : null}
+
       <form
         encType="multipart/form-data"
         acceptCharset="UTF-8"
@@ -70,12 +79,26 @@ function AddProjectForm() {
       >
         <div>
           <input
+            className="form-control"
             type="text"
             name="title"
             value={formData.title}
+            placeholder="Enter title here"
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <input
+            className="form-control"
+            type="file"
+            multiple={false}
+            name="image"
             onChange={handleChange}
           />
         </div>
+
         <div>
           <ReactQuill
             name="description"
@@ -83,22 +106,8 @@ function AddProjectForm() {
             onChange={handleContentChange}
           />
         </div>
-        <div>
-          <input
-            type="file"
-            multiple={false}
-            name="image"
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-            <input type="url" name="url" value={formData.url} />
-        </div>
-        <input type="submit" value="Share Project" />
+        <input className="btn btn-primary" type="submit" value="Share Project" />
       </form>
-      {errors.map((error) => (
-        <p>{error}</p>
-      ))}
     </div>
   );
 }

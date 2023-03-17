@@ -9,7 +9,7 @@ class FriendsController < ApplicationController
             friendsArr << friend
         end
 
-        friendships = Friendship.where(friend: self)
+        friendships = Friendship.where(friend: user)
         friendships.each do |friendship|
             friendsArr << friendship.user
         end

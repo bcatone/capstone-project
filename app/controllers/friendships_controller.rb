@@ -11,6 +11,7 @@ class FriendshipsController < ApplicationController
         friendship = Friendship.create!(friendship_params)
         accepted_request.destroy!
         DirectMessageList.create!(friendship_id: friendship.id)
+        #render json: friendship, status: :created
         render json: friendship.friend, status: :created
     end
 

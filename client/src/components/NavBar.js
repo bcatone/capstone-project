@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { updateMe } from "../redux/me/meSlice";
@@ -7,6 +7,7 @@ import { updateFriends } from "../redux/friends/friendsSlice";
 import { updateFriendSuggestions } from "../redux/friend_suggestions/friendSuggestionsSlice";
 import { updateErrors } from "../redux/error/errorSlice";
 import { updateLoading } from "../redux/loading/loadingSlice";
+import { updateInbox } from "../redux/inbox/inboxSlice";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function NavBar() {
     dispatch(updateMe({}));
     dispatch(updateFriends([]));
     dispatch(updateFriendSuggestions([]));
+    dispatch(updateInbox([]));
     dispatch(updateErrors([]));
     navigate("/");
   };
@@ -68,7 +70,7 @@ function NavBar() {
               </li>
 
               {/* Me */}
-              <li className="nav-item dropdown">
+              {/* <li className="nav-item dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
                   role="button"
@@ -109,10 +111,30 @@ function NavBar() {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> */}
 
               {/* Network */}
-              <li className="nav-item dropdown">
+              <li className="nav-item">
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/network/friends"
+                >
+                  Network
+                </Link>
+              </li>
+
+              <li className="nav-item">
+              <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/projects"
+                >
+                 Projects
+                </Link>
+              </li>
+
+              {/* <li className="nav-item dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
                   role="button"
@@ -128,16 +150,11 @@ function NavBar() {
                       Friend Page
                     </Link>
                   </li>
-                  <li>
-                    <Link className="dropdown-item" to={`/network/people`}>
-                      Find Connections
-                    </Link>
-                  </li>
                 </ul>
-              </li>
+              </li> */}
 
               {/* Explore */}
-              <li className="nav-item dropdown">
+              {/* <li className="nav-item dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
                   role="button"
@@ -170,7 +187,8 @@ function NavBar() {
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
+
               {/* Account */}
 
               <li className="nav-item dropdown">
@@ -193,23 +211,12 @@ function NavBar() {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="dropdown-item"
-                      to={`user/${me.id}/portfolio`}
-                    >
-                      Change Password
-                    </Link>
-                  </li>
-                  <li>
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <Link
-                      className="dropdown-item"
-                      to={`/user/${me.id}/account_settings`}
-                    >
+                  <button className="dropdown-item" onClick={handleLogout}>
                       Sign Out
-                    </Link>
+                    </button>
                   </li>
                   <li>
                     <Link

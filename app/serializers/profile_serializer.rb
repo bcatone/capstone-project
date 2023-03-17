@@ -1,4 +1,4 @@
 class ProfileSerializer < ActiveModel::Serializer
-  attributes :id, :clear
-  has_one :user
+  attributes :id
+  has_one :user_id
 end

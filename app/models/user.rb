@@ -6,10 +6,12 @@ class User < ApplicationRecord
     has_many :user_projects, dependent: :destroy
     has_many :projects, through: :user_projects
 
-    has_many :friend_requests
+    has_many :user_interest_profiles
+    has_many :interest_profiles, through: :user_interest_profiles
 
     has_many :posts
     
+    has_many :friend_requests
     has_many :senders, through: :friend_requests
     has_many :receivers, through: :friend_requests
 
@@ -20,6 +22,9 @@ class User < ApplicationRecord
     has_one_attached :avatar, dependent: :destroy
 
     validates :username, presence: true, uniqueness: true
+    validates :first_name, presence: true
+    validates :last_name, presence: true
+    validates :date_of_birth, presence: true
     validates :age, numericality: { greater_than_or_equal_to: 13 }
 
     has_secure_password
@@ -71,6 +76,17 @@ class User < ApplicationRecord
         friendshipArr
     end
 
+    def already_requested?(user)
+        friend_request_arr = []
+        friend_requests = FriendRequest.where(sender_id: self.id).or(FriendRequest.where(receiver_id: self.id))
+        friend_requests.each do |friend_request|
+            if user.id == sender_id || user.id == receiver_id
+                return true
+            end
+        end
+        return false
+    end
+
     def conversation_info
         conversationArr = []
         friendships = self.connected_friendships
@@ -102,12 +118,16 @@ class User < ApplicationRecord
     end
 
     def suggested_friends
-        # Add more complex logic here later
         suggestions = [];
         users = User.where.not(id: self.id)
         users.each do |user|
-            if !self.is_friend?(user)
-                suggestions << user
+            if !self.is_friend?(user) && !self.already_requested?(user)
+                # Minors will only be suggested minors
+                if !self.is_adult? && !user.is_adult?
+                    suggestions << user
+                else
+                    suggestions << user
+                end
             end
         end
         suggestions
@@ -127,6 +147,8 @@ class User < ApplicationRecord
         distance = Math::sqrt(a + b)
     end
 
+    # Methods for post-presentation development
+
     # def common_interests_with_user(user)
     #     self_interests = self.interests
     #     user_interests = user.interests
@@ -142,9 +164,6 @@ class User < ApplicationRecord
     #     common_hobbies = self_hobbies & user_hobbies
     #     common_hobbies
     # end
-
-
-    
 
     # def suggested_partners
     #     # Add more complex logic here

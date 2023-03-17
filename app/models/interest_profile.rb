@@ -1,5 +1,6 @@
 class InterestProfile < ApplicationRecord
-    has_many :profiles
+    has_many :user_interest_profiles
+    has_many :users, through: :user_interest_profiles
 
     validates :answer_string, length: { is: 60 }
     validates :realistic, numericality: { greater_than_or_equal_to: 0, only_integer: true }

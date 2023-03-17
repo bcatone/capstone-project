@@ -1,0 +1,2 @@
+class UserInterestProfilesController < ApplicationController
+end

@@ -1,14 +1,18 @@
 import React from "react";
+import ReactQuill from "react-quill";
 
 function DirectMessage({ message }) {
+  const parse = require("html-react-parser");
+
   return (
     <div>
-        <div className="row">
-        <div className="col">{message.username}</div>
-        <div className="col">{message.created_at}</div>
+        <div>
+          <span>
+            <strong>{message.sender.username}</strong>
+          </span>
         </div>
-      
-    </div>
+        <div>{parse(message.message)}</div>
+      </div>
   );
 }
 

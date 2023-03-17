@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateErrors } from "../redux/error/errorSlice";
 import { updateMe } from "../redux/me/meSlice";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { updateCountries } from "../redux/countries/countriesSlice";
-import { Country, State, City, csc } from 'country-state-city';
 
 function Signup() {
   const [formOptions, setFormOptions] = useState({
@@ -27,6 +27,7 @@ function Signup() {
     state_id: "",
     city_id: "",
     zip_code: "",
+    career_title: "",
     avatar: "",
   });
   const navigate = useNavigate();
@@ -34,6 +35,33 @@ function Signup() {
   const errors = useSelector((state) => state.error.value);
 
   useEffect(() => {
+    dispatch(updateErrors([]))
+  }, []);
+
+  useEffect(() => {
+    fetch("/geolocations").then((resp) => {
+      if (resp.ok) {
+        resp.json().then((geoData) => {
+          setFormOptions({
+            countries: geoData.all_countries,
+            states: geoData.all_states_in_country,
+            cities: geoData.all_cities_in_state,
+          });
+          setFormData({
+            ...formData,
+            country_id: geoData.country_id,
+            state_id: geoData.state_id,
+            city_id: geoData.city_id,
+            zip_code: geoData.geolocation.zip,
+          });
+        });
+      } else {
+        getCountries();
+      }
+    });
+  }, []);
+
+  const getCountries = () => {
     fetch("/countries").then((resp) => {
       if (resp.ok) {
         resp.json().then((countries) => {
@@ -44,15 +72,20 @@ function Signup() {
         resp.json().then((errors) => console.log(errors));
       }
     });
-  }, []);
+  };
 
-  const handleCountrySelection = (e) => {
-    const country_id = e.target.value;
+  const handleCountrySelection = (country_id) => {
+    setFormData({
+      ...formData,
+      country_id: country_id,
+      state_id: "",
+      city_id: "",
+      zip_code: "",
+    });
     fetch(`/countries/${country_id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((states) => {
           setFormOptions({ ...formOptions, states: states.states });
-          setFormData({ ...formData, country_id: country_id });
         });
       } else {
         resp.json().then((json) => console.log(json));
@@ -60,13 +93,12 @@ function Signup() {
     });
   };
 
-  const handleStateSelection = (e) => {
-    const state_id = e.target.value;
+  const handleStateSelection = (state_id) => {
+    setFormData({ ...formData, state_id: state_id, city_id: "", zip_code: "" });
     fetch(`states/${state_id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((cities) => {
           setFormOptions({ ...formOptions, cities: cities.cities });
-          setFormData({ ...formData, state_id: state_id });
         });
       } else {
         resp.json().then((json) => console.log(json));
@@ -120,6 +152,7 @@ function Signup() {
     data.append("state_id", formData.state_id);
     data.append("city_id", formData.city_id);
     data.append("zip_code", formData.zip_code);
+    data.append("career_title", formData.career_title);
 
     fetch(`/users`, {
       method: "POST",
@@ -127,19 +160,21 @@ function Signup() {
     }).then((resp) => {
       if (resp.ok) {
         resp.json().then((user) => {
-          fetch('/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: formData.username, password: formData.password})
-          })
-          .then(resp=> {
+          fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: formData.username,
+              password: formData.password,
+            }),
+          }).then((resp) => {
             if (resp.ok) {
-              resp.json().then(user => dispatch(updateMe(user)));
-              navigate('/');
+              resp.json().then((user) => dispatch(updateMe(user)));
+              navigate("/");
             } else {
-              resp.json().then(json => console.log([json.errors]));
+              resp.json().then((json) => console.log([json.errors]));
             }
-          })
+          });
         });
       } else {
         resp.json().then((json) => {
@@ -150,23 +185,24 @@ function Signup() {
     });
   };
 
-  // Styles
-  const loginClass = "form-signin w-100 m-auto"
-  const fieldClass = "h3 mb-3 fw-normal";
-  const buttonClass = "w-20 btn btn-lg btn-primary";
-
   return (
-    <div className={loginClass}>
-      <h1>Sign Up</h1>
-      <form
-        encType="multipart/form-data"
-        acceptCharset="UTF-8"
-        onSubmit={handleSubmit}
-      >
+    <div className="position-absolute top-50 start-50 translate-middle">
+      {errors.length > 0 ? (
+        <div className="row alert alert-danger">
+          {errors.map((error, i) => (
+            <p key={i}>{error}</p>
+          ))}
+        </div>
+      ) : null}
 
-        <div>
+      <div className="row">
+        <h1>Sign Up</h1>
+      </div>
+
+      <form className="row g-3" onSubmit={handleSubmit}>
+        <div className="col-md-3">
           <input
-            className={fieldClass}
+            className="form-control"
             type="text"
             name="username"
             value={formData.userName}
@@ -175,10 +211,9 @@ function Signup() {
             required
           />
         </div>
-
-        <div>
+        <div className="col-md-3">
           <input
-            className={fieldClass}
+            className="form-control"
             type="password"
             name="password"
             value={formData.password}
@@ -188,7 +223,203 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="email"
+            name="email"
+            value={formData.userName}
+            placeholder="Enter email"
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="tel"
+            name="phone_number"
+            value={formData.phone_number}
+            placeholder="Enter phone number"
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            placeholder="*Enter first name"
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            placeholder="*Enter last name"
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="date"
+            name="date_of_birth"
+            value={formData.date_of_birth}
+            max={getMinDateOfBirth()}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="text"
+            name="career_title"
+            value={formData.career_title}
+            placeholder="Enter job title"
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="col-md-3">
+          <select
+            defaultValue={""}
+            className="form-select"
+            onChange={(e) => handleCountrySelection(e.target.value)}
+            name="country_id"
+            value={formData.country_id}
+          >
+            <option value="" disabled>
+              Select a country:
+            </option>
+            {formOptions.countries.map((country) => (
+              <option key={country.id} value={country.id}>
+                {country.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {formData.country_id ? (
+          <div className="col-md-3">
+            <select
+              defaultValue={""}
+              className="form-select"
+              onChange={(e) => handleStateSelection(e.target.value)}
+              name="state_id"
+              value={formData.state_id}
+            >
+              <option value="" disabled>
+                Select a state:
+              </option>
+              {formOptions.states.map((state) => (
+                <option key={state.id} value={state.id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
+        {formData.state_id ? (
+          <div className="col-md-3">
+            <select
+              className="form-select"
+              onChange={handleChange}
+              name="city_id"
+              value={formData.city_id}
+              defaultValue={""}
+            >
+              <option value="" disabled>
+                Select a city:
+              </option>
+              {formOptions.cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
+        <div className="col-md-3">
+          <input
+            className="form-control"
+            type="text"
+            name="zip_code"
+            value={formData.zip_code}
+            placeholder="Enter zip code"
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="col-md-4">
+          <img className="avatar-preview" src={avatarDisplayUrl} />
+        </div>
+
+        <div className="col-md-8">
+          <label className="form-label">Upload a profile picture: </label>
+          <input
+            className="form-control"
+            type="file"
+            multiple={false}
+            name="avatar"
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="col-md-12">
+          <input
+            className="btn btn-primary btn-lg"
+            type="submit"
+            value="Sign up"
+          />
+        </div>
+      </form>
+
+      {/* <form
+        encType="multipart/form-data"
+        acceptCharset="UTF-8"
+        onSubmit={handleSubmit}
+      >
+        <div className="row">
+          <div className="col-md-4">
+            <input
+              className={fieldClass}
+              type="text"
+              name="username"
+              value={formData.userName}
+              placeholder="*Enter username"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-4">
+            <input
+              className={fieldClass}
+              type="password"
+              name="password"
+              value={formData.password}
+              placeholder="*Enter password"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="row">
+        <div className="col-md-4">
           <input
             className={fieldClass}
             type="email"
@@ -198,8 +429,7 @@ function Signup() {
             onChange={handleChange}
           />
         </div>
-
-        <div>
+        <div className="col-md-4">
           <input
             className={fieldClass}
             type="tel"
@@ -209,6 +439,10 @@ function Signup() {
             onChange={handleChange}
           />
         </div>
+        </div>
+        
+
+        
 
         <div>
           <input
@@ -242,17 +476,21 @@ function Signup() {
             value={formData.date_of_birth}
             max={getMinDateOfBirth()}
             onChange={handleChange}
+            required
           />
         </div>
 
         <div>
-          <select defaultValue={""}
+          <select
+            defaultValue={""}
             className={fieldClass}
-            onChange={handleCountrySelection}
+            onChange={(e) => handleCountrySelection(e.target.value)}
             name="country_id"
             value={formData.country_id}
           >
-            <option value="" disabled>Select a country:</option>
+            <option value="" disabled>
+              Select a country:
+            </option>
             {formOptions.countries.map((country) => (
               <option key={country.id} value={country.id}>
                 {country.name}
@@ -261,34 +499,46 @@ function Signup() {
           </select>
         </div>
 
-        {formData.country ? (
+        {formData.country_id ? (
           <div>
-          <select defaultValue={""}
-            className={fieldClass}
-            onChange={handleStateSelection}
-            name="state_id"
-          >
-            <option value="" disabled>Select a state:</option>
-            {formOptions.states.map((state) => (
-              <option key={state.id} value={state.id}>
-                {state.name}
+            <select
+              defaultValue={""}
+              className={fieldClass}
+              onChange={(e) => handleStateSelection(e.target.value)}
+              name="state_id"
+              value={formData.state_id}
+            >
+              <option value="" disabled>
+                Select a state:
               </option>
-            ))}
-          </select>
-        </div>
+              {formOptions.states.map((state) => (
+                <option key={state.id} value={state.id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
         ) : null}
 
         {formData.state_id ? (
           <div>
-          <select className={fieldClass} onChange={handleChange} name="city_id" defaultValue={""}>
-          <option value="" disabled>Select a city:</option>
-            {formOptions.cities.map((city) => (
-              <option key={city.id} value={city.id}>
-                {city.name}
+            <select
+              className={fieldClass}
+              onChange={handleChange}
+              name="city_id"
+              value={formData.city_id}
+              defaultValue={""}
+            >
+              <option value="" disabled>
+                Select a city:
               </option>
-            ))}
-          </select>
-        </div>
+              {formOptions.cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </div>
         ) : null}
 
         <div>
@@ -314,15 +564,14 @@ function Signup() {
               onChange={handleChange}
             />
           </div>
-
         </div>
-        {errors.map((error) => (
-          <p>{error}</p>
-        ))}
         <div>
           <input className={buttonClass} type="submit" value="Sign up" />
         </div>
-      </form>
+      </form> */}
+      <p>
+        Already have an account? <Link to="/login">Log In</Link>
+      </p>
     </div>
   );
 }

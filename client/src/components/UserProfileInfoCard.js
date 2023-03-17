@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-import ReactModal from "react-modal";
-import { useSelector, useDispatch } from "react-redux";
-import { updateMe } from "../redux/me/meSlice";
+import { useSelector} from "react-redux";
 import EditAvatar from "./EditAvatar";
-import MeCard from "./MeCard";
 
 function UserProfileInfoCard({ user }) {
   const me = useSelector((state) => state.me.value);
-  const [displayUrl, setDisplayUrl] = useState(user.avatar.url);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
-  const dispatch = useDispatch();
 
   const toggleAvatarModal = () => {
     setIsEditAvatar((isEditAvatar) => !isEditAvatar);
   };
 
   const handleAvatarChange = (file) => {
-    setDisplayUrl(file);
+
   };
 
   return (
-    <div className="user_card">
+    <div className="user_card bg-secondary-subtle bg-gradient text-dark">
       <img src={user.avatar.url} alt="avatar" onClick={toggleAvatarModal} />
       {user.id === me.id && isEditAvatar ? (
         <EditAvatar

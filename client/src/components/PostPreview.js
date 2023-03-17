@@ -23,8 +23,6 @@ function PostPreview({ post }) {
     fetch(`/posts/${post.id}`, { method: "DELETE" }).then((resp) => {
       if (resp.ok) {
         dispatch(updatePosts(filteredPosts));
-      } else {
-        resp.json().then((json) => dispatch(updateErrors([json.errors])));
       }
     });
   };
@@ -37,20 +35,18 @@ function PostPreview({ post }) {
 
   return (
     <div className="post">
-      <p className="post-title">{post.title}</p>
-      <span>{post.created_at}</span>
-      <p>{post.username} </p>
-
+      <p className="fs-3">{post.title}</p>
+      <span><strong>{post.username} </strong></span>
+      <span> {post.created_at}</span>
+      {parse(`<div>${post.content}</div>`)}
       {post.username === me.username ? (
         <div>
-          <button className="btn btn-primary" onClick={toggleIsEditMode}>Edit Post</button>
-          <button className="btn btn-primary" onClick={onDelete} value={post.id}>
-            Delete
-          </button>
-        </div>
+        <button className="btn btn-primary" onClick={toggleIsEditMode}>Edit Post</button>
+        <button className="btn btn-primary" onClick={onDelete} value={post.id}>
+          Delete
+        </button>
+      </div>
       ) : null}
-
-      {parse(`<div>${post.content}</div>`)}
     </div>
   );
 }

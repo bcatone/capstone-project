@@ -1,5 +1,5 @@
 class Friendship < ApplicationRecord
-  has_many :direct_message_lists, dependent: :destroy
+  has_one :direct_message_list, dependent: :destroy
   belongs_to :user
   belongs_to :friend, class_name: :User
 

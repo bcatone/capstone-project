@@ -6,6 +6,7 @@ import { updateMe } from "../redux/me/meSlice";
 import { updateErrors } from "../redux/error/errorSlice";
 import { updateFriendRequests } from "../redux/friend_requests/friendRequestsSlice";
 import { updateFriends } from "../redux/friends/friendsSlice";
+import { updateInbox } from "../redux/inbox/inboxSlice";
 
 function FriendRequestCard({ user }) {
   const me = useSelector((state) => state.me.value);
@@ -28,10 +29,13 @@ function FriendRequestCard({ user }) {
       if (resp.ok) {
         resp.json().then((newFriend) => {
           const filteredFriendRequests = friendRequests.filter(
-            (request) => request.sender_id !== newFriend.id
+            (request) => {
+              console.log(request)
+              return request.id !== user.id}
           );
           dispatch(updateFriendRequests(filteredFriendRequests));
           dispatch(updateFriends([newFriend, ...friends]));
+          dispatch(updateInbox(me.conversation_info))
         });
       } else {
         resp.json().then((json) => dispatch(updateErrors([json.errors])));
@@ -40,15 +44,15 @@ function FriendRequestCard({ user }) {
   };
 
   return (
-    <div className="col user_card">
+    <div className="col user_card bg-secondary-subtle">
       <img src={user.avatar.url} alt="avatar" />
       {/* <a onClick={handleClickOnUser}>{user.username}</a> */}
       <Link to={`/user/${user.id}`}>{user.username}</Link>
-      <p>{user.full_name}</p>
-      <p>{user.age} years old</p>
-      <p>{user.location}</p>
+      <div>{user.full_name}</div>
+      <div>{user.career_title}</div>
+      <div>{user.location}</div>
       {me.id !== user.id ? (
-        <button onClick={handleAcceptFriendRequest}>Accept</button>
+        <button className="btn btn-primary" onClick={handleAcceptFriendRequest}>Accept</button>
       ) : null}
     </div>
   );

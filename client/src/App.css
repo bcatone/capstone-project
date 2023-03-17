@@ -1,55 +1,23 @@
-
 /* Bootstrap */
 
-
-.col {
-  border: 1px solid black;
-  /* overflow: hidden; */
+body {
+  background-image: linear-gradient(
+      115deg,
+      rgba(211, 229, 255, 0.6),
+      rgba(211, 229, 255, 0.5)
+    ),
+    url("../public/bg.jpg");
+  background-color: #EEF;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-/* Custom CSS */
-
-.interest-profile-question {
-  border: 2px solid black;
-  margin-bottom: 20px;
-  width: 400px;
-}
-
-.me-card {
-  border: 2px solid black;
-  border-radius: 5px;
-  max-width: 300px;
+.App {
   text-align: center;
 }
 
-.inbox-container {
-  border: 2px solid black;
-  background-color: rgb(185, 185, 237);
-  max-width: 150px;
-  min-height: 250px;
-  text-align: center;
-}
-
-.inbox-title {
-  border:  2px solid black;
-  font-weight: bold;
-}
-
-.inbox-option {
-  border: 1px solid black;
-}
-
-.inbox-option img {
-  height: 20px;
-  width: 20px;
-}
-
-.post {
-  border: 2px solid black;
-}
-
-.post-title {
-font-weight: bold;
+.container {
+  min-height: 100%;
 }
 
 .account-options {
@@ -71,7 +39,95 @@ font-weight: bold;
   width: 150px;
 }
 
+.connection-container {
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 10px;
+  background: rgba(249, 249, 250, 0.5);
+}
 
+.contents {
+  display: flex;
+  max-width: 800px;
+}
+
+.inbox-container {
+  border: 2px solid black;
+  border-radius: 5px;
+  max-width: 300px;
+  min-height: 250px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.inbox-option {
+  border-bottom: 1px solid black;
+}
+
+.inbox-option img {
+  height: 20px;
+  width: 20px;
+}
+
+.inbox-title {
+  border-bottom: 2px solid black;
+  font-weight: bold;
+}
+
+.interest-profile-question {
+  border: 2px solid black;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.me-card {
+  border: 2px solid black;
+  border-radius: 5px;
+  max-width: 300px;
+  text-align: center;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.message {
+  border-bottom: 2px solid black;
+  margin-bottom: 10px;
+}
+
+.message-body {
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.post {
+  border-top: 2px solid black;
+  margin-top: 10px;
+}
+
+.post-container {
+  border: 2px solid black;
+  border-radius: 5px;
+  max-width: 800px;
+  margin-top: 10px;
+  background: rgba(249, 249, 250, 0.5);
+}
+
+.post-title {
+  font-weight: bold;
+}
+
+.post-title-input {
+  min-width: 800px;
+}
+
+.project-card {
+  margin: 10px;
+}
+
+.signup {
+  max-width: 80%;
+}
 
 .user_card {
   border: 2px solid black;
@@ -90,9 +146,9 @@ font-weight: bold;
   src: local("../public/loading_img.gif");
 }
 
- .App {
-  text-align: center;
-}
+
+
+
 /*
 .App-logo {
   height: 40vmin;

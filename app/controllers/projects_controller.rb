@@ -12,6 +12,7 @@ class ProjectsController < ApplicationController
 
     def create
         project = Project.create!(project_params)
+        UserProject.create!(project: project, user_id: params[:user_id])
 
         if !project.image.attached?
             project.image.attach(
@@ -22,7 +23,6 @@ class ProjectsController < ApplicationController
         end
 
         render json: project, status: :created
-
     end
 
     def update
@@ -54,6 +54,6 @@ class ProjectsController < ApplicationController
     private
 
     def project_params
-        params.permit(:title, :description, :url)
+        params.permit(:title, :description, :url, :image)
     end
 end

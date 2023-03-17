@@ -9,9 +9,7 @@ import projectsReducer from "./projects/projectsSlice"
 import postsReducer from "./posts/postsSlice"
 import directMessageListsReducer from './direct_message_lists/directMessageListsSlice';
 import directMessagesReducer from "./direct_messages/directMessagesSlice";
-import countriesReducer from "./countries/countriesSlice";
-import statesReducer from "./states/statesSlice";
-import citiesReducer from "./cities/citiesSlice";
+import inboxReducer from "./inbox/inboxSlice";
 
 export const store = configureStore({
     reducer: {
@@ -19,11 +17,12 @@ export const store = configureStore({
         direct_message_lists: directMessageListsReducer,
         direct_message: directMessagesReducer,
         error: errorReducer,
-        loading: loadingReducer,
         friend_suggestions: friendSuggestionsReducer,
         friends: friendsReducer,
         friend_requests: friendRequestsReducer,
-        projects: projectsReducer,
-        posts: postsReducer
+        inbox: inboxReducer,
+        loading: loadingReducer,
+        posts: postsReducer,
+        projects: projectsReducer
     }
 });
