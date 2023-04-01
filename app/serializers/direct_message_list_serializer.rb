@@ -23,9 +23,4 @@ class DirectMessageListSerializer < ActiveModel::Serializer
     username
   end
 
-  def direct_messages
-    messages = self.object.direct_messages
-  end
-  
-
 end

@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     def update
         user = User.find(params[:id])
 
-        if params[:avatar] && params[:avatar] != user.avatar
+        if params[:avatar]
             user.avatar.purge
         end
 

@@ -17,7 +17,7 @@ function Settings() {
   });
 
   const handleChange = (e) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
@@ -37,16 +37,16 @@ function Settings() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     }).then((resp) => {
       if (resp.ok) {
-        resp.json().then((user) => dispatch(updateMe(user)));
+        resp.json().then((user) => dispatch(user => updateMe(user)));
       } else {
-        resp.json().then((json) => dispatch(updateErrors([json.errors])));
+        resp.json().then((json) => console.log(json.errors));
       }
     });
   };
-
-  const fieldClass = "h3 mb-3 fw-normal";
   return (
     <div>
       {errors.length > 0 ? (

@@ -42,30 +42,19 @@ end
 # end
 # puts "Done seeding industries from O*NET"
 
-# puts "Seeding CSC"
-# users = User.all
-# us = Country.find_by!(isoCode: "US")
-# fl = Country.find_by!(country_id: us.id, isoCode: "FL")
-# miami = Country.find_by!(country: us, state: fl, name: "Miami")
-# users.each do |user|
-#     user.update!(country: us, state: fl, city: miami)
-# end
-
-# puts "Done seeding CSC"
-
-# puts "Seeding job titles from O*NET..."
-# response = onet_ws.call("https://services.onetcenter.org/ws/mnm/careers/?sort=name&start=1&end=923")
-# hash = JSON.parse(response.to_json)
-# puts hash
+puts "Seeding job titles from O*NET..."
+response = onet_ws.call("https://services.onetcenter.org/ws/mnm/careers/name?start=1&end=923")
+hash = JSON.parse(response.to_json)
+puts hash
 # careers = hash["career"]
-# hash.each do |career|
-#     puts career["title"]
-#     puts career["code"]
-#     title = career["title"]
-#     code = career["code"]
-#     Career.create!(title: title, code: code)
-# end
-# puts "Done seeding job titles from O*NET"
+hash.each do |career|
+    puts career["title"]
+    puts career["code"]
+    title = career["title"]
+    code = career["code"]
+    Career.create!(title: title, code: code)
+end
+puts "Done seeding job titles from O*NET"
 
 
 # puts hash

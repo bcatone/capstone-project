@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import 'react-quill/dist/quill.snow.css';
 import { useSelector, useDispatch } from "react-redux";
 import { updateErrors } from "../redux/error/errorSlice";
 import { updateProjects } from "../redux/projects/projectsSlice";
@@ -18,48 +18,48 @@ function AddProjectForm() {
   });
   const [imageUrl, setImageUrl] = useState("");
 
-  const handleChange = (e) => {
-    let { name, value } = e.target;
+    const handleChange = (e) => {
+        let { name, value } = e.target;
+    
+        if (name === "image") {
+          value = e.target.files[0];
+          //setImageUrl(URL.createObjectURL(value))
+        }
+    
+        setFormData({ ...formData, [name]: value });
+      };
 
-    if (name === "image") {
-      value = e.target.files[0];
-      setImageUrl(URL.createObjectURL(value));
-    }
+      const handleContentChange = (value) => {
+        setFormData({...formData, description: value});
+      };
 
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleContentChange = (value) => {
-    setFormData({ ...formData, description: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("description", formData.description);
-    data.append("url", formData.url);
-
-    if (formData.image !== "") {
-      data.append("image", formData.image);
-    }
-
-    fetch(`users/${me.id}/projects`, {
-      method: "POST",
-      body: data,
-    }).then((resp) => {
-      if (resp.ok) {
-        resp
-          .json()
-          .then((project) => dispatch(updateProjects([project, ...projects])));
-      } else {
-        resp.json().then((json) => {
-          dispatch(updateErrors([json.errors]));
+      const handleSubmit = (e) => {
+        e.preventDefault();
+    
+        const data = new FormData();
+        data.append("title", formData.title);
+        data.append("description", formData.description);
+        data.append("url", formData.url);
+    
+        if (formData.image !== "") {
+          data.append("image", formData.image);
+        }
+    
+        fetch(`users/${me.id}/projects`, {
+          method: "POST",
+          body: data,
+        }).then((resp) => {
+          if (resp.ok) {
+            resp
+              .json()
+              .then((project) => dispatch(updateProjects([project, ...projects])));
+          } else {
+            resp.json().then((json) => {
+              dispatch(updateErrors([json.errors]));
+            });
+          }
         });
-      }
-    });
-  };
+      };
 
   return (
     <div>

@@ -1,7 +1,6 @@
 class FriendsController < ApplicationController
 
     def index
-        friendsArr = []
         user = User.find(params[:user_id])
 
         friends = user.friends

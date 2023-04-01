@@ -39,7 +39,7 @@ function App() {
         });
       }
     })
-  }, [dispatch]);
+  }, []);
 
   if (!me.username) {
     return (

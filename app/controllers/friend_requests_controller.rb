@@ -1,6 +1,6 @@
 class FriendRequestsController < ApplicationController
-    skip_before_action :authorized_user
-    wrap_parameters format: []
+     skip_before_action :authorized_user
+     wrap_parameters format: []
 
     def index
         friend_requests = FriendRequest.where(receiver_id: params[:user_id])

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const directMessagesSlice = createSlice({
     name: 'direct_messages',
     initialState: {
-        value: [],
+        value: []
     },
     reducers: {
         updateDirectMessages(state, action) {

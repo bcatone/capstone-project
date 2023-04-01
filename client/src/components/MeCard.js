@@ -12,7 +12,8 @@ function MeCard() {
             <div>{me.full_name}</div>
             <div>{me.career_title}</div>
             <div>{me.location}</div>
-            
+            <div>Age: {me.age}</div>
+            <div>{me.location ? me.location : null}</div>
         </div>
     );
 };

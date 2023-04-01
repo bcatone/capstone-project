@@ -32,11 +32,11 @@ function UserProfile() {
     }
 
     return (
-        <div>
-          <div className="row">
-          <UserProfileInfoCard user={user}/>
-          </div>
-            <div className="row">
+        <div className="row">
+            {/* <div className="col">
+            <UserProfileInfoCard user={user}/>
+            </div> */}
+            <div className="col">
                 <AboutMe />
             </div>
             

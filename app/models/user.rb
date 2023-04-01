@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    #CRUD
     has_many :friendships, dependent: :destroy
     has_many :direct_message_lists, through: :friendships
     has_many :friends, through: :friendships
@@ -8,6 +9,11 @@ class User < ApplicationRecord
 
     has_many :user_interest_profiles
     has_many :interest_profiles, through: :user_interest_profiles
+
+    has_many :user_posts, dependent: :destroy
+    has_many :posts, through: :posts
+    
+    has_many :friend_requests
 
     has_many :posts
     
@@ -131,6 +137,8 @@ class User < ApplicationRecord
             end
         end
         suggestions
+        # Add more complex logic here later
+        User.where.not(id: self.id)
     end
 
     def latitude

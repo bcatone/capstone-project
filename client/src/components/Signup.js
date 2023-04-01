@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { updateErrors } from "../redux/error/errorSlice";
+import { useSelector, useDispatch } from 'react-redux';
+import { updateErrors } from '../redux/error/errorSlice';
 import { updateMe } from "../redux/me/meSlice";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -10,10 +10,10 @@ function Signup() {
   const [formOptions, setFormOptions] = useState({
     countries: [],
     states: [],
-    cities: [],
+    cities: []
   });
   const [avatarDisplayUrl, setAvatarDisplayUrl] = useState("");
-
+  
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -64,12 +64,12 @@ function Signup() {
   const getCountries = () => {
     fetch("/countries").then((resp) => {
       if (resp.ok) {
-        resp.json().then((countries) => {
-          dispatch(updateCountries);
-          setFormOptions({ ...formOptions, countries: countries });
-        });
+        resp.json().then(countries => {
+          dispatch(updateCountries)
+          setFormOptions({...formOptions, countries: countries})
+      })
       } else {
-        resp.json().then((errors) => console.log(errors));
+        resp.json().then(errors => console.log(errors))
       }
     });
   };
@@ -88,7 +88,7 @@ function Signup() {
           setFormOptions({ ...formOptions, states: states.states });
         });
       } else {
-        resp.json().then((json) => console.log(json));
+        resp.json().then(json => console.log(json))
       }
     });
   };
@@ -101,7 +101,7 @@ function Signup() {
           setFormOptions({ ...formOptions, cities: cities.cities });
         });
       } else {
-        resp.json().then((json) => console.log(json));
+        resp.json().then(json => console.log(json))
       }
     });
   };
@@ -110,11 +110,11 @@ function Signup() {
     let currentDate = new Date();
     let year = currentDate.getFullYear() - 13;
     let month = currentDate.getMonth() + 1;
-    month = month.toString().padStart(2, "0");
+    month = month.toString().padStart(2, '0');
     let day = currentDate.getDate();
-    day = day.toString().padStart(2, "0");
+    day = day.toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
-  };
+};
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -125,7 +125,7 @@ function Signup() {
 
     if (name === "avatar") {
       value = e.target.files[0];
-      setAvatarDisplayUrl(URL.createObjectURL(value));
+      setAvatarDisplayUrl(URL.createObjectURL(value))
     }
 
     setFormData({ ...formData, [name]: value });
@@ -156,8 +156,8 @@ function Signup() {
 
     fetch(`/users`, {
       method: "POST",
-      body: data,
-    }).then((resp) => {
+      body: data
+    }).then(resp => {
       if (resp.ok) {
         resp.json().then((user) => {
           fetch("/login", {
@@ -177,11 +177,11 @@ function Signup() {
           });
         });
       } else {
-        resp.json().then((json) => {
-          console.log(json);
+        resp.json().then(json => {
+          console.log(json)
           dispatch(updateErrors([json.errors]));
-        });
-      }
+        })
+    }
     });
   };
 
@@ -445,29 +445,27 @@ function Signup() {
         
 
         <div>
-          <input
-            className={fieldClass}
-            type="text"
-            name="first_name"
-            value={formData.first_name}
-            placeholder="*Enter first name"
-            onChange={handleChange}
-            required
-          />
+        <input
+          className="h3 mb-3 fw-normal"
+          type="text"
+          name="*first_name"
+          value={formData.first_name}
+          placeholder="*Enter first name"
+          onChange={handleChange}
+          required
+        />
         </div>
-
         <div>
-          <input
-            className={fieldClass}
-            type="text"
-            name="last_name"
-            value={formData.last_name}
-            placeholder="*Enter last name"
-            onChange={handleChange}
-            required
-          />
+        <input
+          className="h3 mb-3 fw-normal"
+          type="text"
+          name="*last_name"
+          value={formData.last_name}
+          placeholder="*Enter last name"
+          onChange={handleChange}
+          required
+        />
         </div>
-
         <div>
           <input
             className={fieldClass}
@@ -479,7 +477,6 @@ function Signup() {
             required
           />
         </div>
-
         <div>
           <select
             defaultValue={""}
@@ -542,16 +539,14 @@ function Signup() {
         ) : null}
 
         <div>
-          <input
-            className={fieldClass}
-            type="text"
-            name="zip_code"
-            value={formData.zip_code}
-            placeholder="Enter zip code"
-            onChange={handleChange}
-          />
+        <input
+          type="text"
+          name="zip_code"
+          value={formData.zip_code}
+          placeholder="Enter zip code"
+          onChange={handleChange}
+        />
         </div>
-
         <div>
           <img className="avatar-preview" src={avatarDisplayUrl} />
           <div className="form-group">
@@ -566,7 +561,10 @@ function Signup() {
           </div>
         </div>
         <div>
-          <input className={buttonClass} type="submit" value="Sign up" />
+        <input
+          type="submit"
+          value="Sign up"
+        />
         </div>
       </form> */}
       <p>

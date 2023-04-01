@@ -28,8 +28,9 @@ Rails.application.routes.draw do
 
   # friendship connection routes
   get '/users/:user_id/friend_suggestions', to: 'friend_suggestions#index'
+  get '/countries/:country_id/states/:state_id', to: 'states#show'
+
   get '/users/:user_id/friend_requests', to: 'friend_requests#index'
-  get '/users/:user_id/friendships', to: 'friendships#index'
   get '/users/:user_id/friends', to: 'friends#index'
   delete '/users/:user_id/friends/:friend_id', to: 'friends#destroy'
 

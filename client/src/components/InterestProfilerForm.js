@@ -64,8 +64,6 @@ function InterestProfilerForm() {
       answerString += formData[i];
     }
 
-    console.log(answerString);
-
     fetch("/interest_profiles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
