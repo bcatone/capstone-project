@@ -6,6 +6,9 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const errors = useSelector((state) => state.error.value);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -41,6 +44,9 @@ function Login() {
       }
     });
   };
+
+  const fieldClass = "h3 mb-3 fw-normal";
+  const buttonClass = "w-100 btn btn-lg btn-primary";
 
   return (
     <div className="position-absolute top-50 start-50 translate-middle">

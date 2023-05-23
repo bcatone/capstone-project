@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateErrors } from "../redux/error/errorSlice";
-import UserCard from "./UserCard";
+import { updateDirectMessageLists } from "../redux/direct_message_lists/directMessageListsSlice";
+import ReactQuill from "react-quill";
 
 function DirectMessageList() {
   const [friendId, setFriendId] = useState("");
@@ -92,4 +94,4 @@ function DirectMessageList() {
   );
 }
 
-export default DirectMessageList
+export default DirectMessageList;
